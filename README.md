@@ -83,6 +83,26 @@ print(repayment_schedule)
 ]
 ```
 
+## Command line
+
+Print a repayment schedule in stdout:
+
+```bash
+uv run python loan_calculator.py <amount> <taeg> <number_repayments> <funding_date> <days_first_repayment> [<as_interests_or_base_fees> [<as_json>]]
+```
+
+Example:
+
+```bash
+uv run python loan_calculator.py 10000 0.209 3 2022-06-01 45 base_fees True
+```
+
+Output:
+
+```
+[{"date": "2022-07-16", "amount_repayment": 3467, "amount_principal": 3067, "amount_interests": 0, "amount_base_fees": 400, "amount_remaining_principal": 6933}, {"date": "2022-08-16", "amount_repayment": 3467, "amount_principal": 3467, "amount_interests": 0, "amount_base_fees": 0, "amount_remaining_principal": 3466}, {"date": "2022-09-16", "amount_repayment": 3466, "amount_principal": 3466, "amount_interests": 0, "amount_base_fees": 0, "amount_remaining_principal": 0}]
+```
+
 ## Streamlit demo
 
 Start a streamlit demo:
