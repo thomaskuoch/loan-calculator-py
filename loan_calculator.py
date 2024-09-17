@@ -2,7 +2,6 @@ import json
 import math
 from dataclasses import asdict, dataclass
 from datetime import date, timedelta
-from itertools import pairwise
 from typing import List, Literal, Union
 
 from dateutil.relativedelta import relativedelta
@@ -135,3 +134,11 @@ def compute_interval_rate(taeg: float, n_days: int) -> float:
         Interval rate.
     """
     return (1 + taeg) ** (n_days / 365) - 1
+
+
+def pairwise(iterable):
+    iterator = iter(iterable)
+    a = next(iterator, None)
+    for b in iterator:
+        yield a, b
+        a = b
