@@ -7,15 +7,17 @@ from pyxirr import xirr
 
 from loan_calculator import TooHighInterestsError, run_loan_calculator
 
-st.title("Finfrog Loan Repayment Schedule")
-
+st.set_page_config(page_title="Loan calculator")
+st.title("Finfrog Loan Calculator")
+st.write(
+    "This app computes a Finfrog loan repayment schedule based on the following parameters:"
+)
 amount_principal = st.slider(
     "Principal amount (€)", min_value=0, max_value=3000, value=600, step=100
 )
 number_repayments = st.slider(
     "Number of repayments", min_value=1, step=1, max_value=24, value=6
 )
-
 taeg = st.number_input(
     "Annual percentage rate of charge (%)",
     min_value=0.0,
@@ -70,8 +72,10 @@ if st.button("Compute repayment schedule"):
     total_fees = df["base_fees"].sum() + df["interests"].sum()
     st.write(f"Total fees: {round(total_fees, 2)}")
 
-    # Compute internal rate of return
+    # Assert XIRR is close to TAEG but always lower or equal
     cashflows = [-amount_principal] + df["repayment"].tolist()
     dates = [funding_date] + df["date"].tolist()
     irr = xirr(dates, cashflows)
     st.write(f"Internal rate of return (XIRR): {round(irr * 100, 2)} %")
+    if irr - taeg / 100 > 0:
+        st.warning("Warning! XIRR > TAEG, this should not happen!")
