@@ -57,10 +57,10 @@ def run_loan_calculator(
     Union[List[Repayment], List[dict]]
         Repayment schedule.
     """
-    # (3) compute daily rate
+    # compute daily rate
     daily_rate = compute_interval_rate(taeg, n_days=1)
 
-    # (4) compute constant amount repayment with respect to the daily rate
+    # compute constant amount repayment with respect to the daily rate
     dates = []
     dates.append(funding_date + timedelta(days=days_first_repayment))
     for i in range(1, number_repayments):
@@ -68,7 +68,7 @@ def run_loan_calculator(
     rates = [1 / (1 + daily_rate) ** (d - funding_date).days for d in dates]
     constant_payment = math.floor(amount / sum(rates))
 
-    # (5) compute repayment schedule
+    # compute repayment schedule
     repayments = []
     remaining_principal = amount
     for start, end in pairwise([funding_date] + dates):
@@ -92,7 +92,7 @@ def run_loan_calculator(
             )
         )
 
-    # (6) adjust last repayment to match the remaining principal due to rounding issues
+    # adjust last repayment to match the remaining principal due to rounding issues
     if remaining_principal != 0:
         repayments[-1].amount_repayment += remaining_principal
         repayments[-1].amount_principal += remaining_principal
