@@ -1,4 +1,7 @@
-begin = """create or replace function loan_calculator(
+begin = """-- THIS FILE IS GENERATED AUTOMATICALLY. DO NOT EDIT IT MANUALLY.
+-- To regenerate it, run `python generate_udtf.py`
+
+create or replace function loan_calculator(
     amount number,
     taeg float,
     number_repayments number,
