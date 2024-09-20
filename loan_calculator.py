@@ -61,10 +61,10 @@ def run_loan_calculator(
     daily_rate = compute_interval_rate(taeg, n_days=1)
 
     # compute constant amount repayment with respect to the daily rate
-    dates = []
-    dates.append(funding_date + timedelta(days=days_first_repayment))
-    for i in range(1, number_repayments):
-        dates.append(dates[0] + relativedelta(months=i))
+    first_repayment_date = funding_date + timedelta(days=days_first_repayment)
+    dates = [
+        first_repayment_date + relativedelta(months=i) for i in range(number_repayments)
+    ]
     rates = [1 / (1 + daily_rate) ** (d - funding_date).days for d in dates]
     constant_payment = math.floor(amount / sum(rates))
 
@@ -72,8 +72,9 @@ def run_loan_calculator(
     repayments = []
     remaining_principal = amount
     for start, end in pairwise([funding_date] + dates):
+        n_days = (end - start).days
         repayment_interests = math.floor(
-            remaining_principal * compute_interval_rate(taeg, n_days=(end - start).days)
+            remaining_principal * compute_interval_rate(taeg, n_days)
         )
         if repayment_interests > constant_payment:
             raise TooHighInterestsError(
@@ -87,8 +88,8 @@ def run_loan_calculator(
                 amount_repayment=constant_payment,
                 amount_principal=repayment_principal,
                 amount_interests=repayment_interests,
-                amount_remaining_principal=remaining_principal,
                 amount_base_fees=0,
+                amount_remaining_principal=remaining_principal,
             )
         )
 
@@ -99,22 +100,31 @@ def run_loan_calculator(
         repayments[-1].amount_remaining_principal = 0
 
     if as_interests_or_base_fees == "base_fees":
-        remaining_principal = amount
-        base_fees_remainder = sum(r.amount_interests for r in repayments)
-        for r in repayments:
-            r.amount_interests = 0
-            if base_fees_remainder > r.amount_repayment:
-                r.amount_base_fees = r.amount_repayment
-                base_fees_remainder -= r.amount_base_fees
-            else:
-                r.amount_base_fees = base_fees_remainder
-                base_fees_remainder = 0
-            r.amount_principal = r.amount_repayment - r.amount_base_fees
-            remaining_principal -= r.amount_principal
-            r.amount_remaining_principal = remaining_principal
+        repayments = apply_base_fees(repayments, amount)
 
     if as_json:
         repayments = json.dumps([asdict(r) for r in repayments], default=str)
+
+    return repayments
+
+
+def apply_base_fees(repayments: List[Repayment], amount: int) -> List[Repayment]:
+    """Transform to the repayment schedule from a interests to base_fees vision."""
+    remaining_principal = amount
+    base_fees_remainder = sum(r.amount_interests for r in repayments)
+
+    for r in repayments:
+        r.amount_interests = 0
+        if base_fees_remainder > r.amount_repayment:
+            r.amount_base_fees = r.amount_repayment
+            base_fees_remainder -= r.amount_base_fees
+        else:
+            r.amount_base_fees = base_fees_remainder
+            base_fees_remainder = 0
+
+        r.amount_principal = r.amount_repayment - r.amount_base_fees
+        remaining_principal -= r.amount_principal
+        r.amount_remaining_principal = remaining_principal
 
     return repayments
 
@@ -138,6 +148,7 @@ def compute_interval_rate(taeg: float, n_days: int) -> float:
 
 
 def pairwise(iterable):
+    """Yield successive pairs from an iterable."""
     iterator = iter(iterable)
     a = next(iterator, None)
     for b in iterator:
