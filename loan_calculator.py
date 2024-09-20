@@ -57,6 +57,18 @@ def run_loan_calculator(
     Union[List[Repayment], List[dict]]
         Repayment schedule.
     """
+    if isinstance(funding_date, str):
+        funding_date = date.fromisoformat(funding_date)
+    validate_inputs(
+        amount,
+        taeg,
+        number_repayments,
+        funding_date,
+        days_first_repayment,
+        as_interests_or_base_fees,
+        as_json,
+    )
+
     # compute daily rate
     daily_rate = compute_interval_rate(taeg, n_days=1)
 
@@ -154,6 +166,40 @@ def pairwise(iterable):
     for b in iterator:
         yield a, b
         a = b
+
+
+def validate_inputs(
+    amount: int,
+    taeg: float,
+    number_repayments: int,
+    funding_date: date,
+    days_first_repayment: int,
+    as_interests_or_base_fees: str,
+    as_json: bool,
+):
+    """Validate loan parameters."""
+    if amount < 100:
+        raise ValueError(
+            "The principal amount of the loan must be greater than 1 euro."
+        )
+    if taeg < 0 or taeg > 1:
+        raise ValueError(
+            "The annual percentage rate of charge must be between 0 and 1."
+        )
+    if number_repayments <= 0:
+        raise ValueError("The number of repayments must be greater than 0.")
+    if not isinstance(funding_date, date):
+        raise ValueError("The funding date must be a date.")
+    if days_first_repayment <= 0:
+        raise ValueError(
+            "The number of days before the first repayment must be greater than 0."
+        )
+    if as_interests_or_base_fees not in ["interests", "base_fees"]:
+        raise ValueError(
+            "The repayment schedule must be either as interests or base fees."
+        )
+    if as_json not in [True, False]:
+        raise ValueError("The as_json argument must be a boolean.")
 
 
 if __name__ == "__main__":
