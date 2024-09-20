@@ -88,13 +88,13 @@ print(repayment_schedule)
 Print a repayment schedule in stdout:
 
 ```bash
-uv run python loan_calculator.py <amount> <taeg> <number_repayments> <funding_date> <days_first_repayment> [<as_interests_or_base_fees> [<as_json>]]
+uv run python cli.py <amount> <taeg> <number_repayments> <funding_date> <days_first_repayment> [<as_interests_or_base_fees> [<as_json>]]
 ```
 
 Example:
 
 ```bash
-uv run python loan_calculator.py 10000 0.209 3 2022-06-01 45 base_fees True
+uv run python cli.py 10000 0.209 3 2022-06-01 45 base_fees True
 ```
 
 Output:
