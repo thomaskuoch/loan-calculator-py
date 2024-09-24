@@ -26,7 +26,7 @@ taeg = st.number_input(
     step=0.01,
     format="%.2f",
 )
-funding_date = st.date_input("Funding date", date.today())
+start_date = st.date_input("Start date", date.today())
 days_first_repayment = st.slider(
     "Days before the first repayment",
     min_value=30,
@@ -47,7 +47,7 @@ if st.button("Compute repayment schedule"):
             amount_principal * 100,
             taeg / 100,
             number_repayments,
-            funding_date,
+            start_date,
             days_first_repayment,
             as_interests_or_base_fees,
         )
@@ -74,7 +74,7 @@ if st.button("Compute repayment schedule"):
 
     # Assert XIRR is close to TAEG but always lower or equal
     cashflows = [-amount_principal] + df["repayment"].tolist()
-    dates = [funding_date] + df["date"].tolist()
+    dates = [start_date] + df["date"].tolist()
     irr = xirr(dates, cashflows)
     st.write(f"Internal rate of return (XIRR): {round(irr * 100, 2)} %")
     if irr - taeg / 100 > 0:

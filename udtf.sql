@@ -5,7 +5,7 @@ create or replace function loan_calculator(
     amount number,
     taeg float,
     number_repayments number,
-    funding_date date,
+    start_date date,
     days_first_repayment number,
     as_interests_or_base_fees varchar
 )
@@ -49,7 +49,7 @@ def run_loan_calculator(
     amount: int,
     taeg: float,
     number_repayments: int,
-    funding_date: date,
+    start_date: date,
     days_first_repayment: int = 45,
     as_interests_or_base_fees: Literal["interests", "base_fees"] = "interests",
     as_json: bool = False,
@@ -64,8 +64,8 @@ def run_loan_calculator(
         Annual percentage rate of charge, between 0 and 1.
     number_repayments : int
         Number of repayments.
-    funding_date : date
-        Funding date of the loan.
+    start_date : date
+        Start date of the loan.
     days_first_repayment : int, optional
         Number of days before the first repayment, by default 45
     as_interests_or_base_fees : Literal['interests', 'base_fees'], optional
@@ -78,15 +78,15 @@ def run_loan_calculator(
     Union[List[Repayment], List[dict]]
         Repayment schedule.
     """
-    if isinstance(funding_date, str):
-        funding_date = date.fromisoformat(funding_date)
+    if isinstance(start_date, str):
+        start_date = date.fromisoformat(start_date)
     if isinstance(as_json, str):
         as_json = as_json.lower() in ("true", "1")
     validate_inputs(
         amount,
         taeg,
         number_repayments,
-        funding_date,
+        start_date,
         days_first_repayment,
         as_interests_or_base_fees,
         as_json,
@@ -96,15 +96,15 @@ def run_loan_calculator(
     daily_rate = compute_interval_rate(taeg, n_days=1)
 
     # compute constant amount repayment with respect to the daily rate
-    first_repayment_date = funding_date + timedelta(days=days_first_repayment)
+    first_repayment_date = start_date + timedelta(days=days_first_repayment)
     dates = [add_months(first_repayment_date, i) for i in range(number_repayments)]
-    rates = [1 / (1 + daily_rate) ** (d - funding_date).days for d in dates]
+    rates = [1 / (1 + daily_rate) ** (d - start_date).days for d in dates]
     constant_payment = math.floor(amount / sum(rates))
 
     # compute repayment schedule
     repayments = []
     remaining_principal = amount
-    for start, end in pairwise([funding_date] + dates):
+    for start, end in pairwise([start_date] + dates):
         n_days = (end - start).days
         repayment_interests = math.floor(
             remaining_principal * compute_interval_rate(taeg, n_days)
@@ -201,7 +201,7 @@ def validate_inputs(
     amount: int,
     taeg: float,
     number_repayments: int,
-    funding_date: date,
+    start_date: date,
     days_first_repayment: int,
     as_interests_or_base_fees: str,
     as_json: bool,
@@ -217,8 +217,8 @@ def validate_inputs(
         )
     if number_repayments <= 0:
         raise ValueError("The number of repayments must be greater than 0.")
-    if not isinstance(funding_date, date):
-        raise ValueError("The funding date must be a date.")
+    if not isinstance(start_date, date):
+        raise ValueError("The start date must be a date.")
     if days_first_repayment <= 0:
         raise ValueError(
             "The number of days before the first repayment must be greater than 0."
@@ -239,7 +239,7 @@ class LoanCalculator:
         amount: int,
         taeg: float,
         number_repayments: int,
-        funding_date: date,
+        start_date: date,
         days_first_repayment: int,
         as_interests_or_base_fees: str,
     ):
@@ -247,7 +247,7 @@ class LoanCalculator:
             amount=amount,
             taeg=taeg,
             number_repayments=number_repayments,
-            funding_date=funding_date,
+            start_date=start_date,
             days_first_repayment=days_first_repayment,
             as_interests_or_base_fees=as_interests_or_base_fees,
             as_json=False,

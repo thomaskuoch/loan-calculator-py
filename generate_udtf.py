@@ -5,7 +5,7 @@ create or replace function loan_calculator(
     amount number,
     taeg float,
     number_repayments number,
-    funding_date date,
+    start_date date,
     days_first_repayment number,
     as_interests_or_base_fees varchar
 )

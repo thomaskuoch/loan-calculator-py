@@ -18,7 +18,7 @@ from loan_calculator import TooHighInterestsError, run_loan_calculator
                 "amount": 10000,
                 "taeg": 0.209,
                 "number_repayments": 3,
-                "funding_date": date(2022, 6, 1),
+                "start_date": date(2022, 6, 1),
                 "days_first_repayment": 45,
                 "as_interests_or_base_fees": "interests",
             },
@@ -54,7 +54,7 @@ from loan_calculator import TooHighInterestsError, run_loan_calculator
                 "amount": 10000,
                 "taeg": 0.209,
                 "number_repayments": 3,
-                "funding_date": date(2022, 6, 1),
+                "start_date": date(2022, 6, 1),
                 "days_first_repayment": 45,
                 "as_interests_or_base_fees": "base_fees",
             },
@@ -90,7 +90,7 @@ from loan_calculator import TooHighInterestsError, run_loan_calculator
                 "amount": 60000,
                 "taeg": 0.224,
                 "number_repayments": 6,
-                "funding_date": date(2024, 9, 24),
+                "start_date": date(2024, 9, 24),
                 "days_first_repayment": 37,
                 "as_interests_or_base_fees": "interests",
             },
@@ -150,7 +150,7 @@ from loan_calculator import TooHighInterestsError, run_loan_calculator
                 "amount": 60000,
                 "taeg": 0.224,
                 "number_repayments": 6,
-                "funding_date": date(2024, 9, 24),
+                "start_date": date(2024, 9, 24),
                 "days_first_repayment": 37,
                 "as_interests_or_base_fees": "base_fees",
             },
@@ -210,7 +210,7 @@ from loan_calculator import TooHighInterestsError, run_loan_calculator
                 "amount": 150000,
                 "taeg": 0.2144,
                 "number_repayments": 12,
-                "funding_date": date(2021, 3, 30),
+                "start_date": date(2021, 3, 30),
                 "days_first_repayment": 42,
                 "as_interests_or_base_fees": "interests",
             },
@@ -318,7 +318,7 @@ from loan_calculator import TooHighInterestsError, run_loan_calculator
                 "amount": 150000,
                 "taeg": 0.2144,
                 "number_repayments": 12,
-                "funding_date": date(2021, 3, 30),
+                "start_date": date(2021, 3, 30),
                 "days_first_repayment": 42,
                 "as_interests_or_base_fees": "base_fees",
             },
@@ -435,7 +435,7 @@ def test_loan_calculator(
     assert repayment_schedule == expected
 
     # Check that the XIRR is close to the TAEG
-    dates = [loan_parameters["funding_date"], *[r["date"] for r in repayment_schedule]]
+    dates = [loan_parameters["start_date"], *[r["date"] for r in repayment_schedule]]
     cashflows = [
         -loan_parameters["amount"],
         *[r["amount_repayment"] for r in repayment_schedule],
@@ -451,7 +451,7 @@ def test_too_high_interests_error():
             amount=300000,
             taeg=0.90,
             number_repayments=24,
-            funding_date=date(2022, 6, 1),
+            start_date=date(2022, 6, 1),
             days_first_repayment=60,
             as_interests_or_base_fees="interests",
         )

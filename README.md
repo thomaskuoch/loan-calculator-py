@@ -22,7 +22,7 @@ repayment_schedule = run_loan_calculator(
     amount=60000,
     taeg=0.209,
     number_repayments=6,
-    funding_date=date(2024, 1, 1),
+    start_date=date(2024, 1, 1),
     days_first_repayment=45,
     as_interests_or_base_fees="interests",
     as_json=True,
@@ -88,7 +88,7 @@ print(repayment_schedule)
 Print a repayment schedule in stdout:
 
 ```bash
-uv run python cli.py <amount> <taeg> <number_repayments> <funding_date> <days_first_repayment> [<as_interests_or_base_fees> [<as_json>]]
+uv run python cli.py <amount> <taeg> <number_repayments> <start_date> <days_first_repayment> [<as_interests_or_base_fees> [<as_json>]]
 ```
 
 Example:
