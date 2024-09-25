@@ -1,5 +1,5 @@
 begin = """-- THIS FILE IS GENERATED AUTOMATICALLY. DO NOT EDIT IT MANUALLY.
--- To regenerate it, run `python generate_udtf.py`
+-- To regenerate it, run `python scripts/generate_loan_calculator_udtf.py`
 
 create or replace function loan_calculator(
     amount number,
@@ -28,5 +28,5 @@ with open("loan_calculator.py", "r") as f:
 
 udtf_code = begin + code + "$$;"
 
-with open("udtf.sql", "w") as f:
+with open("udfs/loan_calculator.sql", "w") as f:
     f.write(udtf_code)

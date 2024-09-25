@@ -123,35 +123,3 @@ Run tests with pytest:
 uv run pytest -vv
 ```
 
-## Generate a Snowflake UDTF
-
-Loan calculator can be used as an SQL function.
-
-To do so, create an UDTF with:
-
-```bash
-uv run python generate_udtf.py
-```
-
-This will create an `udtf.sql` file.
-
-Copy/paste and execute the content in a Snowflake SQL query.
-
-Then, use the loan calculator as an SQL query:
-
-
-```sql
-SELECT
-    *
-FROM
-    TABLE(
-        loan_calculator(
-            10000,
-            0.209 :: float,
-            3,
-            '2022-06-01' :: date,
-            45,
-            'interests'
-        )
-    )
-```

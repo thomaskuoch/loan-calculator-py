@@ -1,5 +1,5 @@
 -- THIS FILE IS GENERATED AUTOMATICALLY. DO NOT EDIT IT MANUALLY.
--- To regenerate it, run `python generate_udtf.py`
+-- To regenerate it, run `python scripts/generate_loan_calculator_udtf.py`
 
 create or replace function loan_calculator(
     amount number,
