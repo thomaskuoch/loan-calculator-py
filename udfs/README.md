@@ -51,7 +51,7 @@ FROM
         loan_calculator(
             10000,                -- Loan amount in cents
             0.209 :: float,       -- Interest rate (20.9%)
-            3,                    -- Loan term in lonths
+            3,                    -- Loan term in months
             '2022-06-01' :: date, -- Start date of the loan
             45,                   -- Days of the first repayment
             'interests'           -- Calculation type ('interests' or 'base_fees')
