@@ -1,5 +1,5 @@
-FROM python:3.9.20-slim
-COPY --from=ghcr.io/astral-sh/uv:0.5.10 /uv /uvx /bin/
+FROM python:3.10.14-slim
+COPY --from=ghcr.io/astral-sh/uv:0.8.22 /uv /uvx /bin/
 
 WORKDIR /app
 COPY . .

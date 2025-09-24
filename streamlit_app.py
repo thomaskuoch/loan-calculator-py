@@ -8,9 +8,9 @@ from pyxirr import xirr
 from loan_calculator import TooHighInterestsError, run_loan_calculator
 
 st.set_page_config(page_title="Loan calculator")
-st.title("Finfrog Loan Calculator")
+st.title("Loan Calculator")
 st.write(
-    "This app computes a Finfrog loan repayment schedule based on the following parameters:"
+    "This app computes a loan repayment schedule based on the following parameters:"
 )
 amount_principal = st.slider(
     "Principal amount (€)", min_value=0, max_value=3000, value=600, step=100

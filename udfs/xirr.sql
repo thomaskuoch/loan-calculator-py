@@ -4,7 +4,7 @@ create or replace function xirr(
 )
 returns float
 language python
-runtime_version=3.9
+runtime_version=3.10
 handler='xirr'
 packages = ('pyxirr==0.10.3')
 as $$

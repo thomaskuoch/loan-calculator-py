@@ -31,7 +31,7 @@ def run_loan_calculator(
     as_interests_or_base_fees: Literal["interests", "base_fees"] = "interests",
     as_json: bool = False,
 ) -> Union[List[Repayment], str]:
-    """Compute a finfrog loan repayment schedule.
+    """Compute a loan repayment schedule.
 
     Parameters
     ----------
@@ -40,7 +40,7 @@ def run_loan_calculator(
     taeg : float
         Annual percentage rate of charge, between 0 and 1.
     number_repayments : int
-        Number of repayments.
+        Number of repayments in months.
     start_date : date
         Start date of the loan.
     days_first_repayment : int, optional
@@ -231,7 +231,7 @@ class LoanCalculator:
         )
         return [
             (
-                r.date.isoformat(),
+                r.date,
                 r.amount_repayment,
                 r.amount_principal,
                 r.amount_interests,

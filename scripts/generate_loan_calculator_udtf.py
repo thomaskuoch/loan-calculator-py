@@ -1,4 +1,13 @@
-begin = """-- THIS FILE IS GENERATED AUTOMATICALLY. DO NOT EDIT IT MANUALLY.
+import tomli
+
+with open("pyproject.toml", "rb") as f:
+    pyproject = tomli.load(f)
+    python_version = pyproject.get("requires-python", ">=3.10")
+python_version = (
+    python_version.replace(">=", "").replace("~=", "").replace("==", "").strip()
+)
+
+begin = f"""-- THIS FILE IS GENERATED AUTOMATICALLY. DO NOT EDIT IT MANUALLY.
 -- To regenerate it, run `python scripts/generate_loan_calculator_udtf.py`
 
 create or replace function loan_calculator(
@@ -18,7 +27,7 @@ returns table (
     amount_remaining_principal number
 )
 language python
-runtime_version=3.9
+runtime_version={python_version}
 handler='LoanCalculator'
 as $$
 """

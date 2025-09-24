@@ -19,13 +19,13 @@ from datetime import date
 from loan_calculator import run_loan_calculator
 
 repayment_schedule = run_loan_calculator(
-    amount=60000,
-    taeg=0.209,
-    number_repayments=6,
-    start_date=date(2024, 1, 1),
-    days_first_repayment=45,
-    as_interests_or_base_fees="interests",
-    as_json=True,
+    amount=60000,  # Loan amount in cents
+    taeg=0.209,  # Annual interest rate (TAEG)
+    number_repayments=6,  # Total number of monthly repayments (e.g., 12 = 1 year)
+    start_date=date(2024, 1, 1),  # Loan start date
+    days_first_repayment=45,  # Days between the start date and the first repayment
+    as_interests_or_base_fees="interests",  # Whether to calculate as interests or base fees
+    as_json=True,  # Return result as JSON
 )
 print(repayment_schedule)
 ```
@@ -111,9 +111,7 @@ Start a streamlit demo:
 uv run streamlit run streamlit_app.py --server.port 8501
 ```
 
-Then, go to http://localhost:8501/ to see this:
-
-![streamlit_app_screenshot](streamlit_app.png)
+Then, go to http://localhost:8501/.
 
 ## Tests
 
